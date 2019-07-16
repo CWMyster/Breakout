@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JavaScript</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+<body>
+<div>
+Score: <span class="score"></span>
+Live: <span class="live"></span>
+
+</div>
+<div class="container"></div>
+    <script>
+     const container =document.querySelector('.container');  
+     let conDim = container.getBoundingClientRect();
+     const gameover = document.createElement('div')
+     gameover.textContent="Start Game";
+     gameover.style.position="absolute";
+     gameover.style.color="white";
+     gameover.style.lineHeight="300px";
+     gameover.style.textAlign="center";
+     gameover.style.fontSize="3em";
+     gameover.style.textTransform = "uppercase";
+     gameover.style.backgroundColor= "red";
+     gameover.style.width= "75%";
+
+     gameover.addEventListener('click', startGame);
+     container.appendChild(gameover);
+     
+     const ball = document.createElement('div');
+     ball.style.position="absolute";
+     ball.style.width="20px";
+     ball.style.height="20px";
+     ball.style.backgroundColor="white";
+     ball.style.borderRadius="25px";
+
+     container.appendChild(ball);
+   
+     function startGame(){
+        console.log('start');
+     
+     }
+ 
+    </script>
+</body>
+</head>
+</html>
