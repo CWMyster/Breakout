@@ -1,47 +1,155 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>JavaScript</title>
+    <title>JavaScript Breakout Game</title>
     <link href="style.css" rel="stylesheet" type="text/css">
+
 <body>
-<div>
-Score: <span class="score"></span>
-Live: <span class="live"></span>
+    <div>
+        Score: <span class="score"></span>
+        Live: <span class="lives"></span>
 
-</div>
-<div class="container"></div>
+
+    </div>
+    <div class="container"></div>
     <script>
-     const container =document.querySelector('.container');  
-     let conDim = container.getBoundingClientRect();
-     const gameover = document.createElement('div')
-     gameover.textContent="Start Game";
-     gameover.style.position="absolute";
-     gameover.style.color="white";
-     gameover.style.lineHeight="300px";
-     gameover.style.textAlign="center";
-     gameover.style.fontSize="3em";
-     gameover.style.textTransform = "uppercase";
-     gameover.style.backgroundColor= "red";
-     gameover.style.width= "75%";
+        const container = document.querySelector('.container');
+        
+        let conDim = container.getBoundingClientRect();
+        
+        const gameover = document.createElement('div');
+        gameover.textContent = "Start Game";
+        gameover.style.position = "absolute";
+        gameover.style.color = "white";
+        gameover.style.lineHeight = "300px";
+        gameover.style.textAlign = "center";
+        gameover.style.fontSize = "3em";
+        gameover.style.textTransform = "uppercase";
+        gameover.style.backgroundColor = "red";
+        gameover.style.width = "100%";
+        container.appendChild(gameover);
+        gameover.addEventListener('click', startGame);
+        container.appendChild(gameover);
 
-     gameover.addEventListener('click', startGame);
-     container.appendChild(gameover);
-     
-     const ball = document.createElement('div');
-     ball.style.position="absolute";
-     ball.style.width="20px";
-     ball.style.height="20px";
-     ball.style.backgroundColor="white";
-     ball.style.borderRadius="25px";
+        const ball = document.createElement('div');
+        ball.style.position = "absolute";
+        ball.style.width = "20px";
+        ball.style.height = "20px";
+        ball.style.backgroundColor = "white";
+        ball.style.borderRadius = "25px";
+        ball.style.backgroundImage = "url('images/ball_60x60.png')";
+        ball.style.backgroundSize = "20px 20px";
+        ball.style.top = "%70";
+        ball.style.left = "%50";
+        ball.style.display = "none";
+        container.appendChild(ball);
+        
+        const paddle = document.createElement('div');
+        paddle.style.position = "absolute";
+        paddle.style.backgroundColor = "white";
+        paddle.style.height = "20px";
+        paddle.style.width = "150px";
+        paddle.style.borderRadius = "25px";
+        paddle.style.bottom = "30px";
+        paddle.style.left = "50%";
+        container.appendChild(paddle);
 
-     container.appendChild(ball);
-   
-     function startGame(){
-        console.log('start');
-     
-     }
- 
+        document.addEventListener('keydown', function(e) {
+            //console.log(e.keyCode);
+            if(e.keyCode === 37)paddle.left = true;
+            if(e.keyCode === 39)paddle.right = true;
+        })
+        
+          document.addEventListener('keyup', function(e) {
+            //console.log(e.keyCode);
+            if(e.keyCode === 37)paddle.left = false;
+            if(e.keyCode === 39)paddle.right = false;
+        })
+
+        const player = {
+            gameover :true
+        };
+        
+        
+        
+
+        function startGame() {
+            //console.log('start');
+            if(player.gameover){
+                player.gameover = false;
+                gameover.style.display = "none";
+                player.score = 0;
+                player.lives = 3;
+                ball.style.display = "block";
+                //setup bricks
+                setupBricks(30);
+                
+                
+                scoreUpdater();
+                //window.requestAnimationFrame(update);
+                
+            }  
+      }
+        
+        function setupBricks(num){
+            let row = {
+                x: ((conDim.width % 100)/2),
+                y: 50
+            }
+            
+            for(let x=0; x<num; x++){
+                console.log(row);
+                if(row.x>(conDim.width-100)){
+                    row.y += 50;
+                    row.x = ((conDim.width % 100)/2);
+                }
+                //createBrick
+                
+                row.x += 100;
+            }
+        }
+        
+        
+        
+        function scoreUpdater(){
+            document.querySelector('.score').textContent = player.score;
+            document.querySelector('.lives').textContent = player.lives;
+        }
+
+        function update() {
+            let pCurrent = paddle.offsetLeft;
+            //console.log(pCurrent);
+            if(paddle.left){
+                pCurrent -= 5;
+            }
+            if(paddle.right){
+               pCurrent +=5;
+               }
+            paddle.style.left = pCurrent + 'px';
+                   
+            window.requestAnimationFrame(update);
+
+
+        }
+
+
+
+        /*var start = null;
+
+        function step(timestamp) {
+            if (!start) start = timestamp;
+            var progress = timestamp - start;
+            container.style.transform = 'translateX(' + Math.min(progress / 10, 200) + 'px)';
+            if (progress < 2000) {
+                console.log(progress);
+                window.requestAnimationFrame(step);
+            }
+        }
+
+        window.requestAnimationFrame(step);*/
     </script>
 </body>
 </head>
+
 </html>
