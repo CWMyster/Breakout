@@ -40,9 +40,10 @@
         ball.style.borderRadius = "25px";
         ball.style.backgroundImage = "url('images/ball_60x60.png')";
         ball.style.backgroundSize = "20px 20px";
-        ball.style.top = "%70";
-        ball.style.left = "%50";
         ball.style.display = "none";
+        ball.style.top = "76%";
+        ball.style.left = "%60";
+         
         container.appendChild(ball);
         
         const paddle = document.createElement('div');
@@ -82,12 +83,11 @@
                 player.score = 0;
                 player.lives = 3;
                 ball.style.display = "block";
+                player.ballDir = [5,5];
                 //setup bricks
                 setupBricks(30);
-                
-                
                 scoreUpdater();
-                //window.requestAnimationFrame(update);
+                window.requestAnimationFrame(update);
                 
             }  
       }
@@ -97,21 +97,38 @@
                 x: ((conDim.width % 100)/2),
                 y: 50
             }
-            
+            let skip = false;
             for(let x=0; x<num; x++){
                 console.log(row);
                 if(row.x>(conDim.width-100)){
                     row.y += 50;
+                    if (row.y > (conDim.height/2)){
+                        skip = true;
+                    }
                     row.x = ((conDim.width % 100)/2);
                 }
-                //createBrick
-                
+                row.count = x;
+                if(!skip) {
+                    createBrick(row);}
                 row.x += 100;
             }
         }
         
+        function createBrick(pos){
+            const div = document.createElement('div');
+            div.setAttribute('class','brick');
+            div.style.backgroundColor = rColor();
+            div.textContent = pos.count + 1;
+            div.style.left = pos.x +'px';
+            div.style.top = pos.y + 'px';            
+            container.appendChild(div);
+        }
+            
+        function rColor(){
+            return '#' + Math.random().toString(16).substr(-6);
+        }
         
-        
+       
         function scoreUpdater(){
             document.querySelector('.score').textContent = player.score;
             document.querySelector('.lives').textContent = player.lives;
@@ -119,6 +136,7 @@
 
         function update() {
             let pCurrent = paddle.offsetLeft;
+            moveBall();
             //console.log(pCurrent);
             if(paddle.left){
                 pCurrent -= 5;
@@ -126,17 +144,34 @@
             if(paddle.right){
                pCurrent +=5;
                }
-            paddle.style.left = pCurrent + 'px';
-                   
+            paddle.style.left = pCurrent + 'px';                   
             window.requestAnimationFrame(update);
-
-
+        }
+        
+        function moveBall(){
+            let posBall = {
+                x:ball.offsetLeft,
+                y:ball.offsetTop
+            }
+            
+            if(posBall.y > (conDim.height-30) || posBall.y <0){
+                player.ballDir[1] *= -1;
+            }
+              if(posBall.x > (conDim.width-10) || posBall.x <0){
+                player.ballDir[0] *= -1;
+            }
+            
+            posBall.y += player.ballDir[1];
+            posBall.x += player.ballDir[0]; 
+            
+            ball.style.top = posBall.y + 'px';
+            ball.style.left = posBall.x + 'px';
         }
 
 
 
         /*var start = null;
-
+ 
         function step(timestamp) {
             if (!start) start = timestamp;
             var progress = timestamp - start;
